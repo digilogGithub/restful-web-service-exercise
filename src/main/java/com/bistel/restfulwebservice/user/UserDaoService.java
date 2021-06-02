@@ -10,7 +10,8 @@ import java.util.List;
 @Service
 public class UserDaoService {
     private static List<User> users = new ArrayList<>();
-    private int userCount = 3;
+
+    private static int userCount = 3;
 
     static {
         users.add(new User(1, "digilog", new Date()));
@@ -18,11 +19,20 @@ public class UserDaoService {
         users.add(new User(3, "alice", new Date()));
     }
 
-    public List<User> findAllUsers() {
+    public List<User> findAll() {
         return users;
     }
 
-    public User findOne(int id) {
+    public User save(User user) {
+        if (user.getId() == null) {
+            user.setId(++userCount);
+        }
+
+        users.add(user);
+        return user;
+    }
+
+    public User fineOne(int id) {
         for (User user : users) {
             if (user.getId() == id) {
                 return user;
@@ -31,21 +41,12 @@ public class UserDaoService {
         return null;
     }
 
-    public User saveUser(User user) {
-        if (user.getId() == null) {
-            user.setId(++userCount);
-        }
-        users.add(user);
-        return user;
-    }
-
     public User deleteById(int id) {
-        Iterator<User> userIterator = users.iterator();
-
-        while (userIterator.hasNext()) {
-            User user = userIterator.next();
+        Iterator<User> itr = users.iterator();
+        while (itr.hasNext()) {
+            User user = itr.next();
             if (user.getId() == id) {
-                userIterator.remove();
+                itr.remove();
                 return user;
             }
         }
